@@ -72,7 +72,7 @@ artistName.style=
 controller=new Layer
 	backgroundColor: "#222222"
 	x: Align.center
-	y:artistName.maxY+10
+	y:artistName.maxY
 	width: deviceWidth
 	height: 120
 	backgroundColor: "transparent"
@@ -138,17 +138,37 @@ coverMask.states=
 		animationOptions:
 			curve:"spring(250, 25, 0)"
 
-
+musicController=new Layer
+	width: 640
+	x: Align.center
+	height: 80
+	maxY: coverIMG.y-50
+	backgroundColor: "transparent"
 slider = new SliderComponent
 	x:Align.center
-	y:coverIMG.minY-100
-	width: progressBar.width-100
+	width: progressBar.width-160
 	height: 9
+	parent: musicController
+	y: Align.center
 # slider style
 slider.borderRadius = 4
 slider.fill.backgroundColor="#FFF"
 slider.backgroundColor=barBgColor
 slider.knobSize = 45
+sound_mute=new Layer
+	image: "images/sound_mute.svg"
+	width: 64
+	height: 64
+	parent: musicController
+	y: Align.center
+	x: 0
+sound_up=new Layer
+	image: "images/sound_up.svg"
+	width: 64
+	height: 64
+	parent: musicController
+	y: Align.center
+	maxX: slider.maxX+86
 # Write interaction code here!
 btn_play.onTap ->
 	coverIMG.stateCycle("pause", "playing")
