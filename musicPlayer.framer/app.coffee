@@ -96,20 +96,23 @@ btn_rewind=new Layer
 	parent:controller
 
 coverIMG=new Layer
-	width: 600
-	height: 600
+	width: 620
+	height: 620
 	x:Align.center
 	maxY: deviceHeight-130
 	borderRadius: coverRadius
 	image: "images/cover.png"
+	brightness: 100
 
 coverIMG.states=
 	pause:
-		scale:.95
+		scale:.9
+		brightness: 60
 		animationOptions:
 			curve:"spring(250, 25, 0)"
 	playing:
 		scale: 1
+		brightness: 100
 		animationOptions:
 			curve:"spring(250, 25, 0)"
 
@@ -119,26 +122,7 @@ btn_play.states=
 	playing:
 		image: "images/pause.svg"
 
-
-
-coverMask=new Layer
-	backgroundColor: "#000000"
-	width: coverIMG.width
-	height: coverIMG.height
-	opacity: 0
-	borderRadius: coverRadius
-coverMask.parent=coverIMG
-coverMask.states=
-	pause:
-		opacity:.5
-		animationOptions:
-			curve:"spring(250, 25, 0)"
-	playing:
-		opacity: 0
-		animationOptions:
-			curve:"spring(250, 25, 0)"
-
-musicController=new Layer
+volumeControl=new Layer
 	width: 640
 	x: Align.center
 	height: 80
@@ -148,7 +132,7 @@ slider = new SliderComponent
 	x:Align.center
 	width: progressBar.width-160
 	height: 9
-	parent: musicController
+	parent: volumeControl
 	y: Align.center
 # slider style
 slider.borderRadius = 4
@@ -159,19 +143,30 @@ sound_mute=new Layer
 	image: "images/sound_mute.svg"
 	width: 64
 	height: 64
-	parent: musicController
+	parent: volumeControl
 	y: Align.center
 	x: 0
 sound_up=new Layer
 	image: "images/sound_up.svg"
 	width: 64
 	height: 64
-	parent: musicController
+	parent: volumeControl
 	y: Align.center
 	maxX: slider.maxX+86
 # Write interaction code here!
 btn_play.onTap ->
 	coverIMG.stateCycle("pause", "playing")
-	coverMask.stateCycle("pause", "playing")
 	btn_play.stateCycle("pause", "playing")
 	#print deviceHeight
+btn_play.onTouchStart ->
+	btn_play.brightness=60
+btn_play.onTouchEnd ->
+	btn_play.brightness=100
+btn_rewind.onTouchStart ->
+	btn_rewind.brightness=60
+btn_rewind.onTouchEnd ->
+	btn_rewind.brightness=100
+btn_forward.onTouchStart ->
+	btn_forward.brightness=60
+btn_forward.onTouchEnd ->
+	btn_forward.brightness=100
