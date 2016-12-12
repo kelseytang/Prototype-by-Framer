@@ -56,17 +56,45 @@ songName=new Layer
 songName.html="Hey Love - Video Edit"
 songName.style=
 	"text-align": "center"
-	"font-size":"36px"
+	"font-size":"48px"
 artistName=new Layer
 	x: Align.center
 	y: songName.maxY
 	width: deviceWidth
+	height: 64
 	backgroundColor: "transparent"
 	color: "#888888"
 artistName.html="Adam Stacks - Love Affairs"
 artistName.style=
 	"text-align": "center"
 	"font-size":"36px"
+
+controller=new Layer
+	backgroundColor: "#222222"
+	x: Align.center
+	y:artistName.maxY+10
+	width: deviceWidth
+	height: 120
+	backgroundColor: "transparent"
+btn_play=new Layer
+	image: "images/pause.svg"
+	width: 120
+	height: 120
+	x: Align.center
+	parent:controller
+btn_forward=new Layer
+	image: "images/forward.svg"
+	width: 120
+	height: 120
+	x: btn_play.maxX+80
+	parent:controller
+btn_rewind=new Layer
+	image: "images/rewind.svg"
+	width: 120
+	height: 120
+	maxX: btn_play.minX-80
+	parent:controller
+
 coverIMG=new Layer
 	width: 600
 	height: 600
@@ -84,7 +112,15 @@ coverIMG.states=
 		scale: 1
 		animationOptions:
 			curve:"spring(250, 25, 0)"
-coverIMG.stateSwitch("playing")
+
+btn_play.states=
+	pause:
+		image: "images/play.svg"
+	playing:
+		image: "images/pause.svg"
+
+
+
 coverMask=new Layer
 	backgroundColor: "#000000"
 	width: coverIMG.width
@@ -114,7 +150,8 @@ slider.fill.backgroundColor="#FFF"
 slider.backgroundColor=barBgColor
 slider.knobSize = 45
 # Write interaction code here!
-coverIMG.onTap ->
+btn_play.onTap ->
 	coverIMG.stateCycle("pause", "playing")
 	coverMask.stateCycle("pause", "playing")
+	btn_play.stateCycle("pause", "playing")
 	#print deviceHeight
