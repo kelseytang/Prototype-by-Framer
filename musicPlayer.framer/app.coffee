@@ -9,47 +9,112 @@ Framer.Info =
 	description: ""
 
 
+# Put variable here!
+coverRadius=18
+deviceWidth= Framer.Device.screen.width
+deviceHeight= Framer.Device.screen.height
+barBgColor="#555555"
+fontSize="font-size":"36px"
+# end vairable
 bg=new BackgroundLayer
-	backgroundColor: "rgba(27,72,242,1)"
+	backgroundColor: "rgba(8,14,33,1)"
 # Create item here!
-btn_play=new Layer
+progressBar=new Layer
+	x:Align.center
+	width: 600
+	height: 9
+	y: 100
+	backgroundColor: barBgColor
+	borderRadius: 3
+progressBarFill= new Layer
+	width: progressBar.width/3
+	height: progressBar.height
+	backgroundColor: "#FFF"
+	borderRadius: 3
+progressBarFill.parent=progressBar
+currentTime=new Layer
+	backgroundColor: "transparent"
+	y:30
+currentTime.html = "0:35"
+currentTime.style = fontSize
+currentTime.parent=progressBar
+totleTime=new Layer
+	backgroundColor: "transparent"
+	y:30
+	x:progressBar.width-65
+totleTime.html = "4:20"
+totleTime.style = fontSize
+totleTime.parent=progressBar
+
+songName=new Layer
+	x: Align.center
+	y: 200
+	width: deviceWidth
+	height: 64
+	backgroundColor: "transparent"
+	color: "#FFF" #text color
+songName.html="Hey Love - Video Edit"
+songName.style=
+	"text-align": "center"
+	"font-size":"36px"
+artistName=new Layer
+	x: Align.center
+	y: songName.maxY
+	width: deviceWidth
+	backgroundColor: "transparent"
+	color: "#888888"
+artistName.html="Adam Stacks - Love Affairs"
+artistName.style=
+	"text-align": "center"
+	"font-size":"36px"
+coverIMG=new Layer
 	width: 600
 	height: 600
 	x:Align.center
-	y: Align.center
-	backgroundColor: "#4DF494"
-	borderRadius: 27
+	maxY: deviceHeight-130
+	borderRadius: coverRadius
+	image: "images/cover.png"
 
-btn_play.states=
+coverIMG.states=
 	pause:
-		scale:.9
-		shadowX:0
-		shadowY:0
-		shadowBlur: 0
-		backgroundColor: "rgba(62,198,121,1)"
+		scale:.95
 		animationOptions:
 			curve:"spring(250, 25, 0)"
 	playing:
 		scale: 1
-		shadowX:10
-		shadowY:10
-		shadowColor: "rgba(14,39,128,1)"
-		shadowBlur: 27
-		backgroundColor: "#4DF494"
 		animationOptions:
 			curve:"spring(250, 25, 0)"
-btn_play.stateSwitch("playing")
+coverIMG.stateSwitch("playing")
+coverMask=new Layer
+	backgroundColor: "#000000"
+	width: coverIMG.width
+	height: coverIMG.height
+	opacity: 0
+	borderRadius: coverRadius
+coverMask.parent=coverIMG
+coverMask.states=
+	pause:
+		opacity:.5
+		animationOptions:
+			curve:"spring(250, 25, 0)"
+	playing:
+		opacity: 0
+		animationOptions:
+			curve:"spring(250, 25, 0)"
+
+
 slider = new SliderComponent
 	x:Align.center
-	y:btn_play.maxY+200
-	width: btn_play.width-40
+	y:coverIMG.minY-100
+	width: progressBar.width-100
 	height: 9
 # slider style
 slider.borderRadius = 4
-slider.fill.backgroundColor="#FE8F19"
-slider.backgroundColor="#112F9B"
+slider.fill.backgroundColor="#FFF"
+slider.backgroundColor=barBgColor
 slider.knobSize = 45
 # Write interaction code here!
-btn_play.onTap ->
-	btn_play.stateCycle("pause", "playing")
-	#btn_play.stateSwitch("pause")
+coverIMG.onTap ->
+	coverIMG.stateCycle("pause", "playing")
+	coverMask.stateCycle("pause", "playing")
+	#print deviceHeight
