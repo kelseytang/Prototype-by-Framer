@@ -14,7 +14,7 @@ coverRadius=18
 deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 barBgColor="#555555"
-fontSize="font-size":"36px"
+fontSize="font-size":"30px"
 # create music list
 musicItem_0= new Object
 	title:"Hey Love - Video Edit"
@@ -77,7 +77,7 @@ songName=new Layer
 songName.html=playList[CurrentPlay].title
 songName.style=
 	"text-align": "center"
-	"font-size":"48px"
+	"font-size":"42px"
 artistName=new Layer
 	x: Align.center
 	y: songName.maxY
