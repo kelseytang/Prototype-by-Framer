@@ -15,6 +15,27 @@ deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 barBgColor="#555555"
 fontSize="font-size":"36px"
+# create music list
+musicItem_0= new Object
+	title:"Hey Love - Video Edit"
+	albumInfo:"Adam Stacks - Love Affairs"
+	cover:"images/cover.png"
+musicItem_1= new Object
+	title:"Inside - Gernica Remix"
+	albumInfo:"James Teej - Moonstalker Affairs"
+	cover:"images/cover1.png"
+musicItem_2= new Object
+	title:"Mars - Ripperton Roots Version"
+	albumInfo:"Roots Panorma - Mars"
+	cover:"images/cover2.png"
+musicItem_3= new Object
+	title:"Equal - Orignal Mix"
+	albumInfo:"Marco Resmann - Olympia EP"
+	cover:"images/cover3.png"
+playList= [musicItem_0, musicItem_1, musicItem_2, musicItem_3]
+
+CurrentPlay=2 # initial play item.
+
 # end vairable
 bg=new BackgroundLayer
 	backgroundColor: "rgba(8,14,33,1)"
@@ -53,7 +74,7 @@ songName=new Layer
 	height: 64
 	backgroundColor: "transparent"
 	color: "#FFF" #text color
-songName.html="Hey Love - Video Edit"
+songName.html=playList[CurrentPlay].title
 songName.style=
 	"text-align": "center"
 	"font-size":"48px"
@@ -64,7 +85,7 @@ artistName=new Layer
 	height: 64
 	backgroundColor: "transparent"
 	color: "#888888"
-artistName.html="Adam Stacks - Love Affairs"
+artistName.html=playList[CurrentPlay].albumInfo
 artistName.style=
 	"text-align": "center"
 	"font-size":"36px"
@@ -101,7 +122,7 @@ coverIMG=new Layer
 	x:Align.center
 	maxY: deviceHeight-130
 	borderRadius: coverRadius
-	image: "images/cover.png"
+	image: playList[CurrentPlay].cover
 	brightness: 100
 
 coverIMG.states=
@@ -153,20 +174,54 @@ sound_up=new Layer
 	parent: volumeControl
 	y: Align.center
 	maxX: slider.maxX+86
-# Write interaction code here!
+
+newItem = (updateNumber) ->
+	coverIMG.image= playList[updateNumber].cover
+	songName.html= playList[updateNumber].title
+	artistName.html= playList[updateNumber].albumInfo
+
+# Play button interaction
 btn_play.onTap ->
 	coverIMG.stateCycle("pause", "playing")
 	btn_play.stateCycle("pause", "playing")
-	#print deviceHeight
 btn_play.onTouchStart ->
-	btn_play.brightness=60
+	btn_play.brightness=0
 btn_play.onTouchEnd ->
 	btn_play.brightness=100
+
+# Rewind button interaction 
+btn_rewind.onTap ->
+	if CurrentPlay >0
+		CurrentPlay=CurrentPlay-1
+		newItem(CurrentPlay)
+	else
+		newItem(0)
 btn_rewind.onTouchStart ->
-	btn_rewind.brightness=60
-btn_rewind.onTouchEnd ->
-	btn_rewind.brightness=100
-btn_forward.onTouchStart ->
-	btn_forward.brightness=60
-btn_forward.onTouchEnd ->
+	btn_rewind.brightness=10
+btn_rewind.onTapEnd ->
 	btn_forward.brightness=100
+	if CurrentPlay <= 0
+		btn_rewind.brightness=40
+	else
+		btn_rewind.brightness=100
+
+# Forward button interaction 
+btn_forward.onTap ->
+	if CurrentPlay <3
+		CurrentPlay = CurrentPlay+1
+		newItem(CurrentPlay)
+	else
+		newItem(3)
+		btn_forward.brightness= 40
+btn_forward.onTouchStart ->
+	btn_forward.brightness=0
+btn_forward.onTapEnd ->
+	btn_rewind.brightness=100
+	if CurrentPlay >2
+		btn_forward.brightness= 40
+	else
+		btn_forward.brightness= 100
+		
+# Play button interaction
+
+
