@@ -11,6 +11,7 @@ Framer.Info =
 deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
+audioBook=[]
 listView = new ScrollComponent
 	width: deviceWidth
 	height: deviceHeight-120
@@ -29,4 +30,8 @@ for a in [0...4]
 			y: (bookCoverWidth+20)*a
 			borderRadius: 10
 			parent: listView.content
-		# print a,b
+		audioBook.push(d)
+audioBook[0].onTap ->
+	print "click thumb1"
+audioBook[1].onTap ->
+	print "click thumb2"
