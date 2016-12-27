@@ -21,6 +21,7 @@ listView.scrollHorizontal=false
 listView.contentInset =
     top: 20
     left: 20
+    bottom: 130
 for a in [0...4]
 	for b in [0...2]
 		d=new Layer
@@ -28,10 +29,16 @@ for a in [0...4]
 			height: bookCoverWidth
 			x: (bookCoverWidth+20)*b
 			y: (bookCoverWidth+20)*a
-			borderRadius: 10
+			borderRadius: 24
 			parent: listView.content
 		audioBook.push(d)
-audioBook[0].onTap ->
-	print "click thumb1"
-audioBook[1].onTap ->
-	print "click thumb2"
+for x in [0...8]
+	imageFile="images/book_"+x+".png"
+	audioBook[x].image= imageFile
+
+musicBar= new Layer
+		width: deviceWidth
+		height: 120
+		backgroundColor: "rgba(226,238,250,1)"
+		maxY:deviceHeight
+
