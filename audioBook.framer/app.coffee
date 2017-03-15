@@ -14,14 +14,20 @@ bookCoverWidth= deviceWidth/2-30
 audioBook=[]
 scrollBottom=120
 # ----- #
+
 home= new Layer
-	backgroundColor: "#FFFFFF"
+	backgroundColor: "#eeeeee"
 	width: deviceWidth
 	height: deviceHeight
+header=new Layer
+	width: deviceWidth
+	height: 140
+	parent: home
+	image: "images/header_1.png"
 listView = new ScrollComponent
 	width: deviceWidth
-	height: deviceHeight-120
-	y: 120
+	height: deviceHeight-128
+	y: 128
 	parent: home
 listView.scrollHorizontal=false
 listView.contentInset =
@@ -69,3 +75,4 @@ audioBook[0].onTap ->
 	# showMusicBar.start()
 	flow.showNext(detailPage)
 	listView.bottom=musicBar.height
+
