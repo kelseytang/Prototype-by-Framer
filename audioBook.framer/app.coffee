@@ -16,7 +16,7 @@ scrollBottom=120
 # ----- #
 
 home= new Layer
-	backgroundColor: "#eeeeee"
+	backgroundColor: "#25232A"
 	width: deviceWidth
 	height: deviceHeight
 header=new Layer
@@ -53,7 +53,25 @@ for x in [0...8]
 detailPage = new Layer
 	width: deviceWidth
 	height: deviceHeight
-	backgroundColor: "#eeeeee"
+	backgroundColor: "#2C313F"
+detailPg_ctn= new Layer
+	width: deviceWidth
+	height: deviceHeight-128
+	y:128
+	backgroundColor: "#2C313F"
+	parent: detailPage
+detailPg_albumInfo= new Layer
+	parent: detailPg_ctn
+	width: deviceWidth
+	height: 560
+	image: "images/albumInformation.png"
+detailPg_header = new Layer
+	width: deviceWidth
+	height: 140
+	image: "images/header_2.png"
+	parent: detailPage
+
+
 detailPage.onTap ->
 	flow.showPrevious()
 flow=new FlowComponent
@@ -75,4 +93,4 @@ audioBook[0].onTap ->
 	# showMusicBar.start()
 	flow.showNext(detailPage)
 	listView.bottom=musicBar.height
-
+###
