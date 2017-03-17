@@ -12,7 +12,6 @@ deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
 audioBook=[]
-scrollBottom=120
 # ----- #
 
 home= new Layer
@@ -33,7 +32,7 @@ listView.scrollHorizontal=false
 listView.contentInset =
     top: 20
     left: 20
-    bottom: scrollBottom
+    bottom: 20
 for a in [0...4]
 	for b in [0...2]
 		d=new Layer
@@ -65,32 +64,57 @@ detailPg_albumInfo= new Layer
 	width: deviceWidth
 	height: 560
 	image: "images/albumInformation.png"
+btn_play= new Layer
+	image: "images/btn_play.png"
+	width: 370
+	height: 124
+	x: 344
+	y: 404
+	parent: detailPg_albumInfo
 detailPg_header = new Layer
 	width: deviceWidth
 	height: 140
 	image: "images/header_2.png"
 	parent: detailPage
+# Create a ScrollComponent 
+scroll = new ScrollComponent
+    width: deviceWidth
+    height: detailPg_ctn.height-detailPg_albumInfo.height
+    y: detailPg_albumInfo.maxY
+    parent: detailPg_ctn
+scroll.contentInset =
+    bottom: 0
+scroll.scrollHorizontal = false
+text = new Layer
+	parent: scroll.content
+	width: scroll.width
+	height: 1472
+	image: "images/text.png"
 
-
-detailPage.onTap ->
+detailPg_header.onTap ->
 	flow.showPrevious()
+
 flow=new FlowComponent
 flow.showNext(home)
 # create music bar
 musicBar= new Layer
 		width: deviceWidth
-		height: 130
-		backgroundColor: "rgba(0,0,0,1)"
+		height: 146
+		image: "images/miniBar.png"
 		maxY:deviceHeight+200
 # music bar animation		
 showMusicBar = new Animation musicBar,
     maxY:deviceHeight
     options:
-        #curve: "spring(250, 25, 0)"
+        curve: "spring(250, 25, 0)"
         time:.4
 # display music
 audioBook[0].onTap ->
-	# showMusicBar.start()
 	flow.showNext(detailPage)
-	listView.bottom=musicBar.height
-###
+btn_play.onTap ->
+	showMusicBar.start()
+	listView.contentInset=
+		bottom:146
+	scroll.contentInset =
+		bottom: 146
+	
