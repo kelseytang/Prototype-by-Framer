@@ -52,56 +52,115 @@ for x in [0...8]
 detailPage = new Layer
 	width: deviceWidth
 	height: deviceHeight
-	backgroundColor: "#2C313F"
-detailPg_ctn= new Layer
-	width: deviceWidth
-	height: deviceHeight-128
-	y:128
-	backgroundColor: "#2C313F"
-	parent: detailPage
+	backgroundColor: "#25232A"
+
 detailPg_albumInfo= new Layer
-	parent: detailPg_ctn
 	width: deviceWidth
-	height: 560
+	height: 320
 	image: "images/albumInformation.png"
+	parent: detailPage
+	y: 140
+#detailPg_ctn= new Layer
+detailPg_ctn= new ScrollComponent
+	width: deviceWidth
+	height: deviceHeight-140
+	y: 140
+	backgroundColor: "transparent"
+	parent: detailPage
+	scrollHorizontal: false
+detailPg_header = new Layer
+	width: deviceWidth
+	height: 140
+	y: 0
+	image: "images/header_2.png"
+	parent: detailPage
+
+#detailPg_ctn.draggable.enabled=true
+#detailPg_ctn.draggable.horizontal = false
+text = new Layer
+	width: deviceWidth
+	height: 1376
+	y: 524
+	image: "images/text.png"
+	parent: detailPg_ctn.content
+detailPg_btnGroup = new Layer
+	parent: detailPg_ctn.content
+	width: deviceWidth
+	height: 204
+	backgroundColor: "#25232A"
+	y: 320
+
 btn_play= new Layer
 	image: "images/btn_play.png"
 	width: 370
 	height: 124
 	x: 344
-	y: 404
-	parent: detailPg_albumInfo
-detailPg_header = new Layer
-	width: deviceWidth
-	height: 140
-	image: "images/header_2.png"
-	parent: detailPage
-# Create a ScrollComponent 
-scroll = new ScrollComponent
-    width: deviceWidth
-    height: detailPg_ctn.height-detailPg_albumInfo.height
-    y: detailPg_albumInfo.maxY
-    parent: detailPg_ctn
-scroll.contentInset =
-    bottom: 0
-scroll.scrollHorizontal = false
-text = new Layer
-	parent: scroll.content
-	width: scroll.width
-	height: 1472
-	image: "images/text.png"
+	y: 60
+	parent: detailPg_btnGroup
+btn_like = new Layer
+	image: "images/btn_like_default.png"
+	width: 76
+	height: 76
+	x: 36
+	y: 66
+	parent: detailPg_btnGroup
+btn_like.states =
+    default:
+        image: "images/btn_like_default.png"
+    clicked:
+        image: "images/btn_like_clicked.png"
+btn_like.onTap ->
+    this.stateCycle("clicked", "default")
+btn_preview = new Layer
+	image: "images/btn_preview.png"
+	width: 160
+	height: 72
+	y: 66
+	parent: detailPg_btnGroup
+	x: btn_like.maxX+24
+btn_preview.states =
+    default:
+        image: "images/btn_preview.png"
+    clicked:
+        image: "images/btn_playing.png"
+btn_preview.onTap ->
+    this.stateCycle("clicked", "default")
 
+detailPg_ctn.on Events.Move, (offset) ->
+	updateYposition= -offset.y
+	print updateYposition
+	if updateYposition > 320
+		detailPg_btnGroup.y=updateYposition-10
+	else
+		detailPg_btnGroup.y=320
+		#print "hit!"		
+#create flow #
+flow=new FlowComponent
+flow.showNext(home)
 detailPg_header.onTap ->
 	flow.showPrevious()
 
-flow=new FlowComponent
-flow.showNext(home)
 # create music bar
 musicBar= new Layer
 		width: deviceWidth
 		height: 146
 		image: "images/miniBar.png"
 		maxY:deviceHeight+200
+musicBar_pause= new Layer
+	parent: musicBar
+	image: "images/miniBar_pause.png"
+	width: 72
+	height: 72
+	x: deviceWidth-102
+	y: 50
+musicBar_pause.states =
+    pause:
+        image: "images/miniBar_pause.png"
+    play:
+        image: "images/miniBar_play.png"
+musicBar_pause.onTap ->
+    this.stateCycle("play", "pause")
+
 # music bar animation		
 showMusicBar = new Animation musicBar,
     maxY:deviceHeight
@@ -113,8 +172,8 @@ audioBook[0].onTap ->
 	flow.showNext(detailPage)
 btn_play.onTap ->
 	showMusicBar.start()
-	listView.contentInset=
-		bottom:146
-	scroll.contentInset =
-		bottom: 146
-	
+	print "play is clicked"
+
+
+
+
