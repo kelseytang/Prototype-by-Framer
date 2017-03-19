@@ -60,6 +60,7 @@ detailPg_albumInfo= new Layer
 	image: "images/albumInformation.png"
 	parent: detailPage
 	y: 140
+	originY: 0
 #detailPg_ctn= new Layer
 detailPg_ctn= new ScrollComponent
 	width: deviceWidth
@@ -79,7 +80,7 @@ detailPg_header = new Layer
 #detailPg_ctn.draggable.horizontal = false
 text = new Layer
 	width: deviceWidth
-	height: 1376
+	height: 1436
 	y: 524
 	image: "images/text.png"
 	parent: detailPg_ctn.content
@@ -128,17 +129,20 @@ btn_preview.onTap ->
 
 detailPg_ctn.on Events.Move, (offset) ->
 	updateYposition= -offset.y
-	print updateYposition
+	percentage=1-updateYposition/320
+	detailPg_albumInfo.opacity=percentage
+	#detailPg_albumInfo.blur=updateYposition/15
 	if updateYposition > 320
 		detailPg_btnGroup.y=updateYposition-10
 	else
 		detailPg_btnGroup.y=320
-		#print "hit!"		
+
+	
 #create flow #
 flow=new FlowComponent
 flow.showNext(home)
 detailPg_header.onTap ->
-	flow.showPrevious()
+	flow.showPrevious() 
 
 # create music bar
 musicBar= new Layer
@@ -172,7 +176,7 @@ audioBook[0].onTap ->
 	flow.showNext(detailPage)
 btn_play.onTap ->
 	showMusicBar.start()
-	print "play is clicked"
+
 
 
 
