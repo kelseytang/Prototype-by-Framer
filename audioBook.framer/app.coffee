@@ -44,7 +44,8 @@ for i in [0...4]
 		height: 320
 		parent: recentPlayed_list.content
 		y: 20
-		x:340*i+30
+		x:350*i+30
+		borderRadius: 10
 	played_cover.onTap ->
 		flow.showNext(detailPage)
 	recentPlayed_listGP.push(played_cover)
@@ -107,7 +108,7 @@ detailPg_btnGroup = new Layer
 	parent: detailPg_ctn.content
 	width: deviceWidth
 	height: 204
-	backgroundColor: "#25232A"
+	backgroundColor: "rgba(37,35,42,0.9)"
 	y: 320
 
 btn_play= new Layer
