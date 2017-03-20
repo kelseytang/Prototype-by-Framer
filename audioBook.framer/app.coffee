@@ -7,12 +7,19 @@ Framer.Info =
 	author: "Kelsey Tang"
 	twitter: ""
 	description: ""
-# ----- #
+### 
+All Variables
+----------------------------------- 
+###
 deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
-audioBook=[]
-# ----- #
+flow=
+recentPlayed_listGP=[]
+downloadedGP=[]
+detailPage= 
+
+# ///Home---------------------------- 
 
 home= new Layer
 	backgroundColor: "#25232A"
@@ -23,32 +30,46 @@ header=new Layer
 	height: 140
 	parent: home
 	image: "images/header_1.png"
-listView = new ScrollComponent
-	width: deviceWidth
-	height: deviceHeight-128
-	y: 128
-	parent: home
-listView.scrollHorizontal=false
-listView.contentInset =
-    top: 20
-    left: 20
-    bottom: 20
-for a in [0...4]
-	for b in [0...2]
-		d=new Layer
-			width: bookCoverWidth
-			height: bookCoverWidth
-			x: (bookCoverWidth+20)*b
-			y: (bookCoverWidth+20)*a
-			borderRadius: 12
-			parent: listView.content
-		audioBook.push(d)
-for x in [0...8]
-	imageFile="images/book_"+x+".png"
-	audioBook[x].image= imageFile
+recentPlayed_list = new ScrollComponent
+    width: deviceWidth
+    height: 360
+    y: 160
+    parent: home
 
-	
-# create detail page
+recentPlayed_list.scrollVertical = false
+
+for i in [0...4]
+	played_cover= new Layer
+		width: 320
+		height: 320
+		parent: recentPlayed_list.content
+		y: 20
+		x:340*i+30
+	played_cover.onTap ->
+		flow.showNext(detailPage)
+	recentPlayed_listGP.push(played_cover)
+
+for a in [0...4]
+	imageFile="images/book_"+a+".png"
+	recentPlayed_listGP[a].image=imageFile
+
+downloaded_list= new ScrollComponent
+	width: deviceWidth
+	height: deviceHeight-500
+	y: recentPlayed_list.maxY+30
+	parent: home
+downloaded_list.scrollHorizontal=false
+
+for s in [0...10]
+	downloaded_item= new Layer
+		width: deviceWidth
+		height: 200
+		parent: downloaded_list.content
+		y: 202*s
+		backgroundColor: "rgba(66,66,66,1)"
+
+
+# ///Detaile Page----------------------------
 detailPage = new Layer
 	width: deviceWidth
 	height: deviceHeight
@@ -61,7 +82,7 @@ detailPg_albumInfo= new Layer
 	parent: detailPage
 	y: 140
 	originY: 0
-#detailPg_ctn= new Layer
+
 detailPg_ctn= new ScrollComponent
 	width: deviceWidth
 	height: deviceHeight-140
@@ -76,8 +97,6 @@ detailPg_header = new Layer
 	image: "images/header_2.png"
 	parent: detailPage
 
-#detailPg_ctn.draggable.enabled=true
-#detailPg_ctn.draggable.horizontal = false
 text = new Layer
 	width: deviceWidth
 	height: 1436
@@ -137,14 +156,20 @@ detailPg_ctn.on Events.Move, (offset) ->
 	else
 		detailPg_btnGroup.y=320
 
-	
-#create flow #
+### 
+Create Flow
+----------------------------------- 
+###
 flow=new FlowComponent
 flow.showNext(home)
 detailPg_header.onTap ->
 	flow.showPrevious() 
 
-# create music bar
+
+### 
+Music Bar
+----------------------------------- 
+###
 musicBar= new Layer
 		width: deviceWidth
 		height: 146
@@ -172,11 +197,9 @@ showMusicBar = new Animation musicBar,
         curve: "spring(250, 25, 0)"
         time:.4
 # display music
-audioBook[0].onTap ->
-	flow.showNext(detailPage)
+
 btn_play.onTap ->
 	showMusicBar.start()
-
 
 
 
