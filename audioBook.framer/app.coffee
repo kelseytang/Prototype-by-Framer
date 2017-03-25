@@ -3,9 +3,8 @@
 # http://framerjs.com/docs/#info.info
 
 Framer.Info =
-	title: ""
+	title: "Story Time"
 	author: "Kelsey Tang"
-	twitter: ""
 	description: ""
 ### 
 All Variables
@@ -15,7 +14,7 @@ deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
 flow=
-recentPlayed_listGP=[]
+recentPlayed_arry=[]
 downloadedGP=[]
 detailPage= 
 
@@ -30,13 +29,28 @@ header=new Layer
 	height: 140
 	parent: home
 	image: "images/header_1.png"
+homeDrag= new ScrollComponent
+	width: deviceWidth
+	height: deviceHeight-header.height
+	y: header.maxY-10
+	parent: home
+homeDrag.scrollHorizontal=false
+homeDrag.contentInset =
+    top: 16
 recentPlayed_list = new ScrollComponent
     width: deviceWidth
     height: 360
-    y: 160
-    parent: home
-
+    y: 0
+    parent: homeDrag.content
 recentPlayed_list.scrollVertical = false
+recentPlayed_list.onScrollStart ->
+	homeDrag.scrollVertical=false
+recentPlayed_list.onScrollEnd ->
+	homeDrag.scrollVertical=true
+homeDrag.onScrollStart ->
+	recentPlayed_list.scrollHorizontal= false
+homeDrag.onScrollEnd ->
+	recentPlayed_list.scrollHorizontal=true
 
 for i in [0...4]
 	played_cover= new Layer
@@ -48,27 +62,34 @@ for i in [0...4]
 		borderRadius: 10
 	played_cover.onTap ->
 		flow.showNext(detailPage)
-	recentPlayed_listGP.push(played_cover)
+	recentPlayed_arry.push(played_cover)
 
 for a in [0...4]
 	imageFile="images/book_"+a+".png"
-	recentPlayed_listGP[a].image=imageFile
+	recentPlayed_arry[a].image=imageFile
 
-downloaded_list= new ScrollComponent
+h_myCollection = new Layer
 	width: deviceWidth
-	height: deviceHeight-500
-	y: recentPlayed_list.maxY+30
-	parent: home
-downloaded_list.scrollHorizontal=false
+	height:70
+	y: recentPlayed_list.maxY+32
+	image: "images/h_myCollection.png"
+	parent: homeDrag.content
 
-for s in [0...10]
-	downloaded_item= new Layer
+myCollection_list= new Layer
+	width: deviceWidth
+	height: 1080
+	y: h_myCollection.maxY
+	parent: homeDrag.content
+myCollection_list.scrollHorizontal=false
+
+for s in [0...6]
+	myCollection_item= new Layer
 		width: deviceWidth
-		height: 200
-		parent: downloaded_list.content
-		y: 202*s
-		backgroundColor: "rgba(66,66,66,1)"
-
+		height: 180
+		parent: myCollection_list
+		y: 180*s
+		image: "images/list_1.png"
+homeDrag.sendToBack()
 
 # ///Detaile Page----------------------------
 detailPage = new Layer
