@@ -1,62 +1,76 @@
-layerA = new Layer
+posX=
+posY=
+deviceW= Framer.Device.screen.width
+deviceH= Framer.Device.screen.height
+#-----------------------------//
+baseArea= new Layer
+	width: deviceW
+	height: deviceH/2
+	maxY: deviceH
+
+leftBlk = new Layer
 	borderWidth: 10
 	borderColor: "#FFFFFF"
 	backgroundColor: "transparent"
 	opacity: .5
 
-layerC = new Layer
+rightBlk = new Layer
 	borderWidth: 10
 	borderColor: "#FFFFFF"
 	backgroundColor: "transparent"
-	x: 640-200
+	maxX: deviceW
 	opacity: .5
 
-layerB = new Layer
+pink = new Layer
 	backgroundColor: "rgba(255,64,255,1)"
-	x: Align.center
-	y: Align.center
-
-layerB.draggable.enabled = true
-
-position=
+	x: 0
+	y: 0
+	parent: baseArea
+pink.draggable.enabled = true
 
 
-moveToLeft = new Animation layerB,
+#--// interaction  //
+moveToLeft = new Animation pink,
     x: 0
     y: 0
     options:
         time: .2
-moveToRight = new Animation layerB,
-    x: layerC.x
-    y: layerC.y
+moveToRight = new Animation pink,
+    x: rightBlk.x
+    y: rightBlk.y
     options:
         time: .2
-moveToCenter = new Animation layerB,
-    x: Align.center
+moveToCenter = new Animation pink,
+    x: 0
     y: 0
     options:
-        time: .2
-layerB.onDragMove ->
-	position=layerB.x
-	print position
-	layerB.opacity=.5
-	if position <180
-		layerA.opacity=1
-		layerC.opacity=.5
-	else if position > 250
-		layerA.opacity=.5
-		layerC.opacity=1
+        time: .5
+pink.onDragMove ->
+	posX=pink.x
+	posY=pink.y
+	pink.opacity=.5
+	if posX <170 
+		leftBlk.opacity=1
+		rightBlk.opacity=.5
+	else if posX > 380
+		leftBlk.opacity=.5
+		rightBlk.opacity=1
 	else 
-		layerA.opacity=.5
-		layerC.opacity=.5
-layerB.onDragEnd ->
-	layerB.opacity=1
-	test=position
-	if test< 180
+		leftBlk.opacity=.5
+		rightBlk.opacity=.5
+pink.onDragEnd ->
+	pink.opacity=1
+	endX=posX
+	endY=posY
+	if endX< 170 
 		moveToLeft.start()
-	else if test > 250
+		this.parent="" # leave parent
+	else if endX > 380
+		this.parent=""# leave parent
 		moveToRight.start()	
 	else
-		moveToCenter.start()
-			
+		this.parent=baseArea
+		this.x=0
+		this.y=0
+		#moveToCenter.start()
 

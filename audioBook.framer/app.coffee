@@ -15,8 +15,8 @@ deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
 flow=
 recentPlayed_arry=[]
-downloadedGP=[]
 detailPage= 
+detailTest=
 
 # ///Home---------------------------- 
 
@@ -24,23 +24,29 @@ home= new Layer
 	backgroundColor: "#25232A"
 	width: deviceWidth
 	height: deviceHeight
-header=new Layer
+home_header=new Layer
 	width: deviceWidth
 	height: 140
 	parent: home
 	image: "images/header_1.png"
 homeDrag= new ScrollComponent
 	width: deviceWidth
-	height: deviceHeight-header.height
-	y: header.maxY-10
+	height: deviceHeight-home_header.height
+	y: home_header.maxY-10
 	parent: home
 homeDrag.scrollHorizontal=false
 homeDrag.contentInset =
     top: 16
+h_recentPlay= new Layer
+	parent: homeDrag.content
+	image: "images/h_recentPlay.png"
+	y: 30
+	width: 280
+	height: 48
 recentPlayed_list = new ScrollComponent
     width: deviceWidth
     height: 360
-    y: 0
+    y: 90
     parent: homeDrag.content
 recentPlayed_list.scrollVertical = false
 recentPlayed_list.onScrollStart ->
@@ -53,6 +59,7 @@ homeDrag.onScrollEnd ->
 	recentPlayed_list.scrollHorizontal=true
 
 for i in [0...4]
+	imageFile="images/book_"+i+".png"
 	played_cover= new Layer
 		width: 320
 		height: 320
@@ -60,14 +67,19 @@ for i in [0...4]
 		y: 20
 		x:350*i+30
 		borderRadius: 10
-	played_cover.onTap ->
-		flow.showNext(detailPage)
+		image: imageFile
 	recentPlayed_arry.push(played_cover)
+	played_cover.onTap ->
+		test= this.index
+		detailTest="images/albumInformation_"+test+".png"
+		#print this.index
+		detailPg_albumInfo.image= detailTest
+		flow.showNext(detailPage)
+		
 
-for a in [0...4]
-	imageFile="images/book_"+a+".png"
-	recentPlayed_arry[a].image=imageFile
-
+#recentPlayed_arry[1].onTap ->
+#	
+		
 h_myCollection = new Layer
 	width: deviceWidth
 	height:70
@@ -77,18 +89,27 @@ h_myCollection = new Layer
 
 myCollection_list= new Layer
 	width: deviceWidth
-	height: 1080
+	height: 900
 	y: h_myCollection.maxY
 	parent: homeDrag.content
 myCollection_list.scrollHorizontal=false
 
-for s in [0...6]
+for s in [0...5]
+	itemImage="images/list_"+s+".png"
 	myCollection_item= new Layer
 		width: deviceWidth
 		height: 180
 		parent: myCollection_list
 		y: 180*s
-		image: "images/list_1.png"
+		image: itemImage
+	myCollection_play=new Layer
+		parent: myCollection_item
+		width: 90
+		height: 90
+		maxX:myCollection_item.maxX-30
+		y:45
+	myCollection_item.onTap ->
+		flow.showNext(detailPage)
 homeDrag.sendToBack()
 
 # ///Detaile Page----------------------------
@@ -96,6 +117,7 @@ detailPage = new Layer
 	width: deviceWidth
 	height: deviceHeight
 	backgroundColor: "#25232A"
+
 
 detailPg_albumInfo= new Layer
 	width: deviceWidth
@@ -139,27 +161,15 @@ btn_play= new Layer
 	x: 344
 	y: 60
 	parent: detailPg_btnGroup
-btn_like = new Layer
-	image: "images/btn_like_default.png"
-	width: 76
-	height: 76
-	x: 36
-	y: 66
-	parent: detailPg_btnGroup
-btn_like.states =
-    default:
-        image: "images/btn_like_default.png"
-    clicked:
-        image: "images/btn_like_clicked.png"
-btn_like.onTap ->
-    this.stateCycle("clicked", "default")
+
+
 btn_preview = new Layer
 	image: "images/btn_preview.png"
 	width: 160
 	height: 72
 	y: 66
 	parent: detailPg_btnGroup
-	x: btn_like.maxX+24
+	x: 36
 btn_preview.states =
     default:
         image: "images/btn_preview.png"
@@ -182,36 +192,49 @@ detailPg_ctn.on Events.Move, (offset) ->
 Create Flow
 ----------------------------------- 
 ###
+
+
 flow=new FlowComponent
 flow.showNext(home)
 detailPg_header.onTap ->
 	flow.showPrevious() 
 
 
+		
 ### 
 Music Bar
 ----------------------------------- 
 ###
 musicBar= new Layer
 		width: deviceWidth
-		height: 146
+		height: 128
 		image: "images/miniBar.png"
 		maxY:deviceHeight+200
+musicBar_setting= new Layer
+	parent: musicBar
+	image: "images/miniBar_setting.png"
+	width: 72
+	height: 72
+	x: deviceWidth-102
+	y: 30
+
 musicBar_pause= new Layer
 	parent: musicBar
 	image: "images/miniBar_pause.png"
 	width: 72
 	height: 72
-	x: deviceWidth-102
-	y: 50
+	x: deviceWidth-230
+	y: 30
 musicBar_pause.states =
     pause:
         image: "images/miniBar_pause.png"
     play:
         image: "images/miniBar_play.png"
 musicBar_pause.onTap ->
-    this.stateCycle("play", "pause")
+	this.stateCycle("play", "pause")
 
+musicBar_setting.onTap ->
+	controlPN.animate("show")	
 # music bar animation		
 showMusicBar = new Animation musicBar,
     maxY:deviceHeight
@@ -222,7 +245,87 @@ showMusicBar = new Animation musicBar,
 
 btn_play.onTap ->
 	showMusicBar.start()
+	isPlay=true
+	homeDrag.contentInset =
+		bottom: 160
 
 
+###
+Control panel
+----------------------------------- 
+###
+controlPN = new Layer
+	width: deviceWidth
+	height: deviceHeight
+	backgroundColor: "#2C313F"
+	x: Align.center
+	y: deviceHeight
+	shadowSpread: 5
+	shadowColor: "rgba(0,0,0,1)"
+	shadowBlur: 10
+controlPN_statusBar = new Layer
+	width: deviceWidth
+	height: 128
+	image: "images/header_3.png"
+	parent: controlPN
+controlPN_hub= new Layer
+	x: Align.center
+	y: 180
+	width: 360
+	height: 420
+	image: "images/hub-on.png"
+	parent: controlPN
+controlPN_optGP=new Layer
+	width: deviceWidth
+	height: deviceHeight-626
+	backgroundColor: "#25232A"
+	y: controlPN_hub.maxY+32
+	parent: controlPN
+	
+slider = new SliderComponent
+	width: 520
+	parent: controlPN_optGP
+	x: Align.center
+	y: 444
+ 
+# Customize the appearance 
+slider.knob.shadowY = 2
+slider.knob.shadowBlur = 4
+slider.knob.borderRadius = 20
+slider.knobSize = 40
+slider.fill.backgroundColor = "#93FF1D"
+slider.value=.5
+slider.max=1
 
+controlPN_close= new Layer
+	width: 300
+	height: 80
+	borderRadius: 40
+	backgroundColor: "#FFFFFF"
+	parent: controlPN_optGP
+	y: 550
+	x: Align.center
+
+
+#------------------------#
+controlPN.states=
+	hide:
+		y: deviceHeight
+		animationOptions:
+			time:.4
+	show:
+		y: 0
+		animationOptions:
+			time:.4
+#-----------------------#
+controlPN_hub.states=
+	lightOn:
+		image:"images/hub-on.png"
+	lightOff:
+		image:"images/hub-off.png"
+
+controlPN_hub.onTap ->
+	this.stateCycle("lightOff", "lightOn")
+controlPN_close.onTap ->
+	controlPN.animate("hide")
 
