@@ -223,7 +223,7 @@ musicBar_pause= new Layer
 	image: "images/miniBar_pause.png"
 	width: 72
 	height: 72
-	x: deviceWidth-230
+	x: 36
 	y: 30
 musicBar_pause.states =
     pause:
@@ -254,12 +254,14 @@ btn_play.onTap ->
 Control panel
 ----------------------------------- 
 ###
+controlPN_itemArry=[]
 controlPN = new Layer
 	width: deviceWidth
 	height: deviceHeight
 	backgroundColor: "#2C313F"
 	x: Align.center
 	y: deviceHeight
+	#y: 0
 	shadowSpread: 5
 	shadowColor: "rgba(0,0,0,1)"
 	shadowBlur: 10
@@ -270,7 +272,7 @@ controlPN_statusBar = new Layer
 	parent: controlPN
 controlPN_hub= new Layer
 	x: Align.center
-	y: 180
+	y: 150
 	width: 360
 	height: 420
 	image: "images/hub-on.png"
@@ -279,15 +281,32 @@ controlPN_optGP=new Layer
 	width: deviceWidth
 	height: deviceHeight-626
 	backgroundColor: "#25232A"
-	y: controlPN_hub.maxY+32
+	y: controlPN_hub.maxY+62
 	parent: controlPN
+for d in [0...3]
+	itemImage="images/option_item"+d+".png"
+	controlPN_item= new Layer
+		width: deviceWidth
+		height: 128
+		parent: controlPN_optGP
+		y:130*d
+		image: itemImage
+		
+	controlPN_itemArry.push(controlPN_item)
+controlPN_switch=new Layer
+	parent:controlPN_itemArry[1]
+	height: 72
+	width: 140
+	y:26
+	x: 560
+	image: "images/light-on.png"
 	
 slider = new SliderComponent
 	width: 520
 	parent: controlPN_optGP
 	x: Align.center
-	y: 444
- 
+	y: 475
+
 # Customize the appearance 
 slider.knob.shadowY = 2
 slider.knob.shadowBlur = 4
@@ -303,7 +322,7 @@ controlPN_close= new Layer
 	borderRadius: 40
 	backgroundColor: "#FFFFFF"
 	parent: controlPN_optGP
-	y: 550
+	y: 580
 	x: Align.center
 
 
@@ -323,9 +342,15 @@ controlPN_hub.states=
 		image:"images/hub-on.png"
 	lightOff:
 		image:"images/hub-off.png"
+controlPN_switch.states=
+	lightOn:
+		image:"images/light-on.png"
+	lightOff:
+		image:"images/light-off.png"
 
-controlPN_hub.onTap ->
+controlPN_switch.onTap ->
 	this.stateCycle("lightOff", "lightOn")
+	controlPN_hub.stateCycle("lightOff", "lightOn")
 controlPN_close.onTap ->
 	controlPN.animate("hide")
 
