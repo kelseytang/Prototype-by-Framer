@@ -14,10 +14,11 @@ deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
 flow=
-recentPlayed_arry=[]
+playedBtn_array=[]
 detailPage= 
 detailTest=
-
+whoIsClicked=
+connecting=false
 # ///Home---------------------------- 
 
 home= new Layer
@@ -48,7 +49,8 @@ recentPlayed_list = new ScrollComponent
     height: 360
     y: 90
     parent: homeDrag.content
-recentPlayed_list.scrollVertical = false
+    scrollVertical: false
+
 recentPlayed_list.onScrollStart ->
 	homeDrag.scrollVertical=false
 recentPlayed_list.onScrollEnd ->
@@ -57,10 +59,13 @@ homeDrag.onScrollStart ->
 	recentPlayed_list.scrollHorizontal= false
 homeDrag.onScrollEnd ->
 	recentPlayed_list.scrollHorizontal=true
+homeDrag.sendToBack()
+
+#--- Create recent played list ---#
 
 for i in [0...4]
 	imageFile="images/book_"+i+".png"
-	played_cover= new Layer
+	played_bg= new Layer
 		width: 320
 		height: 320
 		parent: recentPlayed_list.content
@@ -68,17 +73,33 @@ for i in [0...4]
 		x:350*i+30
 		borderRadius: 10
 		image: imageFile
-	recentPlayed_arry.push(played_cover)
-	played_cover.onTap ->
-		test= this.index
-		detailTest="images/albumInformation_"+test+".png"
-		#print this.index
-		detailPg_albumInfo.image= detailTest
-		flow.showNext(detailPage)
+	played_btn= new Layer
+		width: 320
+		height: 320
+		image: "images/recent_play.png"
+		parent:played_bg
+	playedBtn_array.push(played_btn)	
+	playedBtn_array[i].states=
+		play:
+			image: "images/recent_play.png"
+		pause:
+			image: "images/recent_pause.png"
+	played_btn.onTap ->
+		checkConnection()
+		
+		currentState=this.states.current.name
+		whoIsClicked=playedBtn_array.indexOf(this) 
+		#檢查目前元件的 array index
+		for p in playedBtn_array
+			p.stateSwitch("play")
+		if currentState == "play"||currentState == "default"
+			this.stateSwitch("pause")
+			musicBar_pause.stateSwitch("pause")
+		else
+			this.stateSwitch("play")
+			musicBar_pause.stateSwitch("play")
 		
 
-#recentPlayed_arry[1].onTap ->
-#	
 		
 h_myCollection = new Layer
 	width: deviceWidth
@@ -103,14 +124,24 @@ for s in [0...5]
 		y: 180*s
 		image: itemImage
 	myCollection_play=new Layer
+		image: "images/list_playBtn.png"
 		parent: myCollection_item
-		width: 90
-		height: 90
-		maxX:myCollection_item.maxX-30
-		y:45
-	myCollection_item.onTap ->
+		width: 144
+		height: 144
+		x:36
+		y:18
+	hitArea=new Layer
+		parent: myCollection_item
+		x: 200
+		height: 180
+		width: 530
+		backgroundColor: "transparent"
+	hitArea.onTap ->
 		flow.showNext(detailPage)
-homeDrag.sendToBack()
+	myCollection_play.onTap ->
+		fn_showMuiscBar()
+		
+
 
 # ///Detaile Page----------------------------
 detailPage = new Layer
@@ -232,6 +263,7 @@ musicBar_pause.states =
         image: "images/miniBar_play.png"
 musicBar_pause.onTap ->
 	this.stateCycle("play", "pause")
+	playedBtn_array[whoIsClicked].stateCycle("play", "pause")
 
 musicBar_setting.onTap ->
 	controlPN.animate("show")	
@@ -244,11 +276,14 @@ showMusicBar = new Animation musicBar,
 # display music
 
 btn_play.onTap ->
+	fn_showMuiscBar()
+
+fn_showMuiscBar=() ->
 	showMusicBar.start()
 	isPlay=true
 	homeDrag.contentInset =
 		bottom: 160
-
+	
 
 ###
 Control panel
@@ -300,12 +335,17 @@ controlPN_switch=new Layer
 	y:26
 	x: 560
 	image: "images/light-on.png"
-	
+controlPN_slider= new Layer
+	width: deviceWidth
+	height: 96
+	image: "images/volumeBG.png"
+	parent: controlPN_optGP
+	y: 420
 slider = new SliderComponent
 	width: 520
-	parent: controlPN_optGP
+	parent: controlPN_slider
 	x: Align.center
-	y: 475
+	y: 43
 
 # Customize the appearance 
 slider.knob.shadowY = 2
@@ -319,11 +359,10 @@ slider.max=1
 controlPN_close= new Layer
 	width: 300
 	height: 80
-	borderRadius: 40
-	backgroundColor: "#FFFFFF"
 	parent: controlPN_optGP
 	y: 580
 	x: Align.center
+	image: "images/btn_close.png"
 
 
 #------------------------#
@@ -353,4 +392,60 @@ controlPN_switch.onTap ->
 	controlPN_hub.stateCycle("lightOff", "lightOn")
 controlPN_close.onTap ->
 	controlPN.animate("hide")
+
+#--- connecting animation ---#
+
+toastMSG_bg=new Layer
+	width: deviceWidth
+	height: deviceHeight
+	backgroundColor: "#000000"
+	visible: false
+	opacity: 0
+toastMSG_bg.onTap ->
+	#--- do nothing, just block all buttons. ---#
+	
+toastMSG=new Layer
+	width: 300
+	height: 300
+	backgroundColor: "#FFFFFF"
+	borderRadius: 30
+	x: Align.center()
+	y: Align.center()
+	opacity: 0
+	visible: false
+ani_toastMSG_bg = new Animation toastMSG_bg,
+	opacity:.8
+	options:
+		time:.4
+
+ani_toastMSG = new Animation toastMSG,
+	opacity:1
+	options:
+		time:.4
+rev_toastMSG=ani_toastMSG.reverse()
+rev_toastMSG_bg=ani_toastMSG_bg.reverse()
+
+	
+checkConnection=()->
+	if connecting is false
+		connecting= true
+		toastMSG_bg.visible=true
+		toastMSG.visible=true
+		ani_toastMSG_bg.start()
+		ani_toastMSG.start()
+		Utils.delay 2, ->
+			rev_toastMSG.start()
+			rev_toastMSG_bg.start()
+			Utils.delay .4,->
+				fn_showMuiscBar()
+				toastMSG.visible=false
+				toastMSG_bg.visible=false
+				
+			
+			
+	
+
+ 
+	
+
 
