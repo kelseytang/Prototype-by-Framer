@@ -18,18 +18,21 @@ playedBtn_array=[]
 detailPage= 
 detailTest=
 whoIsClicked=
-connecting=false
-# ///Home---------------------------- 
+connecting=false	
 
+# ///Home---------------------------- 
 home= new Layer
 	backgroundColor: "#25232A"
 	width: deviceWidth
 	height: deviceHeight
+	
 home_header=new Layer
 	width: deviceWidth
 	height: 140
 	parent: home
 	image: "images/header_1.png"
+
+	
 homeDrag= new ScrollComponent
 	width: deviceWidth
 	height: deviceHeight-home_header.height
@@ -140,8 +143,6 @@ for s in [0...5]
 		flow.showNext(detailPage)
 	myCollection_play.onTap ->
 		fn_showMuiscBar()
-		
-
 
 # ///Detaile Page----------------------------
 detailPage = new Layer
@@ -219,16 +220,41 @@ detailPg_ctn.on Events.Move, (offset) ->
 	else
 		detailPg_btnGroup.y=320
 
+
+
 ### 
 Create Flow
 ----------------------------------- 
 ###
 
-
 flow=new FlowComponent
+
 flow.showNext(home)
 detailPg_header.onTap ->
 	flow.showPrevious() 
+
+flow.states=
+	open:
+		x:deviceWidth-150
+		animationOptions: 
+			time: .3
+	close:
+		x:0
+		animationOptions:
+			time:.3
+
+sideMenu=new Layer
+	width: deviceWidth
+	height: deviceHeight
+	backgroundColor: "#FFFFFF"
+sideMenu.placeBehind(flow)
+
+layerA = new Layer
+	parent: sideMenu
+
+
+home_header.onTap ->
+	flow.stateCycle("open","close")
 
 
 		
@@ -441,9 +467,6 @@ checkConnection=()->
 				toastMSG.visible=false
 				toastMSG_bg.visible=false
 				
-			
-			
-	
 
  
 	
