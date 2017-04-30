@@ -6,10 +6,8 @@ Framer.Info =
 	title: "Story Time"
 	author: "Kelsey Tang"
 	description: ""
-### 
-All Variables
------------------------------------ 
-###
+
+# All Variables
 deviceWidth= Framer.Device.screen.width
 deviceHeight= Framer.Device.screen.height
 bookCoverWidth= deviceWidth/2-30
@@ -222,10 +220,7 @@ detailPg_ctn.on Events.Move, (offset) ->
 
 
 
-### 
-Create Flow
------------------------------------ 
-###
+# Create Flow
 
 flow=new FlowComponent
 
@@ -233,35 +228,8 @@ flow.showNext(home)
 detailPg_header.onTap ->
 	flow.showPrevious() 
 
-flow.states=
-	open:
-		x:deviceWidth-150
-		animationOptions: 
-			time: .3
-	close:
-		x:0
-		animationOptions:
-			time:.3
 
-sideMenu=new Layer
-	width: deviceWidth
-	height: deviceHeight
-	backgroundColor: "#FFFFFF"
-sideMenu.placeBehind(flow)
-
-layerA = new Layer
-	parent: sideMenu
-
-
-home_header.onTap ->
-	flow.stateCycle("open","close")
-
-
-		
-### 
-Music Bar
------------------------------------ 
-###
+# Music Bar
 musicBar= new Layer
 		width: deviceWidth
 		height: 128
@@ -419,7 +387,47 @@ controlPN_switch.onTap ->
 controlPN_close.onTap ->
 	controlPN.animate("hide")
 
-#--- connecting animation ---#
+# side menu 
+sideMenu_BG=new Layer
+	width: deviceWidth
+	height: deviceHeight
+	backgroundColor: "#000000"
+	opacity: 0.7
+	visible: false
+sideMenu = new Layer
+	width: deviceWidth-100
+	height: deviceHeight
+	backgroundColor: "#eeeeee"
+	x:-(deviceWidth-100)
+	
+sideMenu_BG.states=
+	open:
+		visible:true
+	hide:
+		visible:false
+sideMenu.states=
+	open:
+		x:0
+	animationOptions:
+		time:.3
+	hide:
+		x:-(deviceWidth-100)
+		animationOptions:
+			time:.3
+
+sideMenu.onTap ->
+	control_sideMenu("hide")
+sideMenu_BG.onTap ->
+	control_sideMenu("hide")
+
+home_header.onTap ->
+	control_sideMenu("open")
+	
+control_sideMenu =(status) ->
+	sideMenu.animate(status)
+	sideMenu_BG.animate(status)
+
+# connecting animation
 
 toastMSG_bg=new Layer
 	width: deviceWidth
@@ -466,9 +474,3 @@ checkConnection=()->
 				fn_showMuiscBar()
 				toastMSG.visible=false
 				toastMSG_bg.visible=false
-				
-
- 
-	
-
-

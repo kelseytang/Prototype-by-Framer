@@ -12,7 +12,11 @@
   "deviceOrientation" : 0,
   "selectedHand" : "iphone-hands-2",
   "foldedCodeRanges" : [
-
+    "{0, 182}",
+    "{183, 213}",
+    "{4631, 107}",
+    "{7813, 666}",
+    "{8480, 934}"
   ],
   "deviceScale" : "fit"
 }
