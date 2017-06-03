@@ -17,6 +17,7 @@ detailPage=
 detailTest=
 whoIsClicked=
 connecting=false	
+playFromWhere=
 
 # ///Home---------------------------- 
 home= new Layer
@@ -86,10 +87,10 @@ for i in [0...4]
 		pause:
 			image: "images/recent_pause.png"
 	played_btn.onTap ->
-		checkConnection()
-		
+		checkConnection()	
 		currentState=this.states.current.name
-		whoIsClicked=playedBtn_array.indexOf(this) 
+		whoIsClicked=playedBtn_array.indexOf(this)
+		playFromWhere=1 
 		#檢查目前元件的 array index
 		for p in playedBtn_array
 			p.stateSwitch("play")
@@ -257,7 +258,11 @@ musicBar_pause.states =
         image: "images/miniBar_play.png"
 musicBar_pause.onTap ->
 	this.stateCycle("play", "pause")
-	playedBtn_array[whoIsClicked].stateCycle("play", "pause")
+	if playFromWhere is 1
+		print "play recent"
+		playedBtn_array[whoIsClicked].stateCycle("play", "pause")
+	else if playFromWhere is 3
+		print "play from detail page"
 
 musicBar_setting.onTap ->
 	controlPN.animate("show")	
@@ -271,6 +276,7 @@ showMusicBar = new Animation musicBar,
 
 btn_play.onTap ->
 	fn_showMuiscBar()
+	playFromWhere=3	
 
 fn_showMuiscBar=() ->
 	showMusicBar.start()
